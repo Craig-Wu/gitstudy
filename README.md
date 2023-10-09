@@ -5,3 +5,4 @@ add 1st comment on Sept.18.
 
 add 2nd comment on 20230804, hello, I am starting to use git for document control.
 
+add 3rd comment on 20231009, re-start and trying.
