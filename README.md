@@ -27,7 +27,7 @@ test1 for local branch test
 
 [连接到PDF](./ra8m1ds110.pdf)
 
-<A HREF="file:///RA8D1.pdf">link</a>
+<A HREF="file:///./RA8D1.pdf">link</a>
 
 | 核心板功能 | CPKCOR-RA8D1  | CPKCOR-RA8M1   | CPKCOR-RA8T1   |
 | :--------- | :------------ | :------------- | -------------- |
