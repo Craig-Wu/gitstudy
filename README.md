@@ -27,7 +27,7 @@ test1 for local branch test
 
 [连接到PDF](https://www.renesas.cn/cn/zh/document/dst/ra8m1-group-datasheet?r=25447396#page=2)
 
-[连接到本地PDF](./RA8qsg.pdf)
+[连接到本地PDF](./ra8qsg.pdf)
 
 <A HREF="file:///./ra8qsg.pdf">link</a>
 
