@@ -32,14 +32,14 @@ test1 for local branch test
 <A HREF="file:///ra8d1.jpg">link</a>
 
 
-| 核心板功能 | CPKCOR-RA8D1  | CPKCOR-RA8M1   | CPKCOR-RA8T1   |
-| :--------- | :------------ | :------------- | -------------- |
-| 调试器     | 板载JLink     | 板载JLink      | 板载JLink      |
-| RAM        | 32M 16位SDRAM | 32MB 16位SDRAM | 32MB 16位SDRAM |
-| Flash      | 32MB QSPI NOR | 32MB QSPI NOR  | 32MB QSPI NOR  |
-| 高速USB    | TypeC 2.0 DRP | TypeC 2.0 DRP  | 不支持         |
-| TF卡接口   | SDHI          | SDHI           | 不支持         |
-| MIPI接口   | BTB           | 不支持         | 不支持         |
+| 核心板功能   | SDRAM | SPI Memory | 以太网    | 与核心板冲突的外设           | 扩展功能组2 | 扩展功能组3 |
+| :----------- | :---- | :--------- | --------- | ---------------------- | ----------- | ----------- |
+| CPKCOR-RA8D1 | 16位  | QSPI Flash | 无        | RGB565，RGB666，RGB888 |             |             |
+| CPKCOR-RA8M1 | 16位  | QSPI Flash | Q         | 无                     |             |             |
+| CPKCOR-RA8T1 | 16位  | QSPI Flash | QSPI NOR  |                        |             |             |
+| CPKHMI-RA8D1 | 32位  | Octa Flash | 支持，POE |                        |             |             |
+| CPKDIS-RA8D1 | 32位  | QSPI Flash | 不支持    |                        |             |             |
+| MIPI接口     | BTB   | 不支持     | 不支持    |                        |             |             |
 
 
 
