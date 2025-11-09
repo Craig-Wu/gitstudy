@@ -1,3 +1,5 @@
 :scripts: cjk
 
 link:../ra8qsg.pdf#page=2[TEST PDF Link]
+
+link:https://www.renesas.cn/zh/document/dst/ra8t2-group-datasheet#page=4[^]
