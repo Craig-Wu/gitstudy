@@ -1,0 +1,3 @@
+:scripts: cjk
+
+link:../ra8qsg.pdf[TEST PDF Link]
