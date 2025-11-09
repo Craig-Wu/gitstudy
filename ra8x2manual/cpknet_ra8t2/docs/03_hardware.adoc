@@ -1,0 +1,206 @@
+:scripts: cjk
+//include::locale/attributes.adoc[]
+
+include::./00_directives.adoc[]
+
+== 核心板硬件概述
+
+{coreboardmcu} MCU本身已经集成了1M字节的MRAM和2M字节的SRAM/TCM，在多数应用场景下无需外扩存储。
+
+{coreboardname}核心板作为{coreboardmcu} MCU的开发板，需要支持各种评估和使用的需求，在板上搭载了SDRAM和QSPI NOR Flash，以及其他必需的外围器件。
+
+link:{dsurl1}{core_bd_mcu}{dsurl2}#page4[Link to {coreboardmcu} Datasheet]
+
+=== {coreboardmcu} MCU最小系统
+
+最小系统包括系统 **MCU的供电** 和 **系统控制功能**。
+
+==== {coreboardname} 上MCU的供电
+
+ifeval::["{core_bd_name}" == "cpknet_ra8t2"]
+{coreboardmcu} MCU支持单一3.3V供电，以简化系统设计。{coreboardname}核心板就采用了单电源3.3V设计。
+endif::[]
+
+ifeval::["{core_bd_name}" == "cpkhmi_ra8p1"]
+{coreboardmcu} MCU支持单一3.3V供电，以简化系统设计。如果选用了支持MIPI接口的{coreboardmcu} MCU，则还需要添加1.8V的VCC_MIPI电源。{coreboardname}核心板上的{coreboardmcu}支持MIPI接口，采用了3.3V + 1.8V的双电源设计。
+endif::[]
+
+ifeval::["{core_bd_name}" == "cpkcor-ra8p1"]
+{coreboardmcu} MCU可以支持多个电源域独立供电，进行灵活的系统配置。
+{coreboardname}核心板上使用了DA9279 PMIC提供多路电源，并可通过跳接电阻分配给{coreboardmcu}上不同的电源管脚。
+预先配置的PMIC输出电压和电源分配如下：
+
+* Buck2 (3.3V, 3A) ： VCC, VCC_DCDC, VSYS_3V3 (VCC_USB, VCCUSB_HS, AVCC_USBHS, VBATT, AVCC_MIPI)
+* Buck1 (0.96V, 1.5A) ： 预留给VCL，{coreboardname}核心板缺省使用{coreboardmcu}片内的DC-DC给VCL供电
+* LDO5 (3.3V, 150mA) ： AVCC0，VREFH，VREFH0
+* LDO4 (1.8V, 350mA) ： VCC2，VCC18_MIPI
+* LDO3 (1.2V, 300mA) ： 核心板不使用1.2V电源，连接到J3扩展接口，供扩展板使用
+
+PMIC输出电压还可由板载的RL78/G15管理MCU进行现场配置，配合修改跳接电阻，可以满足各种评估需求。
+endif::[]
+
+ifeval::["{core_bd_name}" == "cpkcor-ra8t2"]
+{coreboardmcu} MCU可以支持多个电源域独立供电，进行灵活的系统配置。
+{coreboardname}核心板上使用了DA9279 PMIC提供多路电源，并可通过跳接电阻分配给{coreboardmcu}上不同的电源管脚。
+预先配置的PMIC输出电压和电源分配如下：
+
+* Buck2 (3.3V, 3A) ： VCC, VCC_DCDC, VSYS_3V3 (VCC_USB, VBATT)
+* Buck1 (0.96V, 1.5A) ： 预留给VCL，{coreboardname}核心板缺省使用{coreboardmcu}片内的DC-DC给VCL供电
+* LDO5 (3.3V, 150mA) ： AVCC0，VREFH，VREFH0
+* LDO4 (1.8V, 350mA) ： VCC2
+* LDO3 (1.2V, 300mA) ： 核心板不使用1.2V电源，连接到J3扩展接口，供扩展板使用
+
+PMIC输出电压还可由板载的RL78/G15管理MCU进行现场配置，配合修改跳接电阻，可以满足各种评估需求。
+endif::[]
+
+.{coreboardmcu} MCU本身有以下主要的电源域，可点击展开，了解详细信息。
+[%collapsible]
+====
+* VCC和VCC_DCDC：为MCU的主要供电电源，以及片内DC-DC电路的供电电源
+* VCC2：为部分I/O口提供独立的电源，例如Octa-SPI接口，可以通过VCC2使用1.8V电平
+* AVCC：为模拟电路和模拟I/O口提供电源
+* VCC_USB：全速USB 2.0接口的电源
+ifeval::["{core_bd_mcu}" == "ra8p1"]
+* VCC_USBHS和AVCC_USBHS：高速USB 2.0接口的电源
+endif::[]
+* VCL：MCU核心供电，不影响I/O电平
+  ** {coreboardmcu} MCU片内自带DC-DC电路，可以使用片内DC-DC为VCL供电
+  ** 也可以使用外部DC-DC芯片为VCL供电，电压为0.87V~0.99V
+* VBATT：电池供电引脚，为片内可在低功耗模式下运行的外设供电，例如RTC
+  ** 副时钟引脚在VBATT电源域，使用副时钟时需要确认电源电压是否可用
+ifeval::["{core_bd_mcu}" == "ra8p1"]
+* VCC_MIPI：MIPI电路的电源 （仅限支持MIPI接口的型号）
+* AVCC_MPIP：MIPI电路的模拟电源（仅限支持MIPI接口的型号）
+endif::[]
+====
+
+{coreboardmcu}的供电电压需求和芯片的运行模式有很多互相影响的地方，在后续的link:09_powerdesign.adoc[{coreboardmcu}电源设计]章节中有详细的解释。
+
+==== {coreboardname}上MCU的系统控制
+
+//引用通用文档
+
+include::../../cpk_ra8p1t2_common/docs/03_hardware_syscontrol.adoc[]
+
+//针对不同MCU的CPK设计，单独描述MD管脚功能和Boot模式
+
+ifeval::["{core_bd_name}" == "cpkhmi_ra8p1"]
+核心板上使用按键SW202控制MD管脚。
+一直按住SW202的同时，按下并释放RESET（SW201），MCU即可进入SCI Boot模式。
+endif::[]
+
+ifeval::["{core_bd_name}" == "cpknet_ra8t2"]
+核心板上使用按键SW202控制MD管脚。
+一直按住SW202的同时，按下并释放RESET（SW201），MCU即可进入SCI Boot模式。
+{coreboardname}也支持USB Boot，将JUSB口连接到上位机后，一直按住SW202的同时，按下并释放RESET（SW201），即可进入USB Boot模式。
+endif::[]
+
+ifeval::["{core_bd_name}" == "cpkcor_ra8p1"]
+核心板上的RL78/G15通过程序控制{coreboardmcu}的MD管脚，瑞萨提供一个缺省的RL78控制程序，在上电时（插入USB电源或按键软开机）按住电源功能键超过2秒，RL78/G15就会拉低MD管脚，再使系统上电。此时{coreboardmcu} MCU即进入SCI Boot模式。
+
+ifeval::["{core_bd_name}" == "cpkcor_ra8t2"]
+核心板上的RL78/G15通过程序控制{coreboardmcu}的MD管脚。
+瑞萨提供一个缺省的RL78控制程序，在上电时（插入USB电源或按键软开机）按住电源功能键超过2秒，RL78/G15就会拉低MD管脚，再为系统上电。
+此时{coreboardmcu} MCU即进入SCI Boot模式。
+也可先将{coreboardname}的JUSB连接到上位机，进入USB Boot模式。
+endif::[]
+
+
+=== 存储扩展
+
+ifeval::["{core_bd_name}" == "cpknet_ra8t2"]
+{coreboardmcu} MCU支持单一3.3V供电，以简化系统设计。{coreboardname}核心板就采用了单电源3.3V设计。
+endif::[]
+
+ifeval::["{core_bd_name}" == "cpkhmi_ra8p1"]
+{coreboardmcu} MCU支持单一3.3V供电，以简化系统设计。如果选用了支持MIPI接口的{coreboardmcu} MCU，则还需要添加1.8V的VCC_MIPI电源。{coreboardname}核心板上的{coreboardmcu}支持MIPI接口，采用了3.3V + 1.8V的双电源设计。
+endif::[]
+
+有关{coreboardname}外部存储扩展的详细信息，会在后续的link:08_storage.adoc[{coreboardname}的板载存储器件]章节中有详细的解释。
+
+### 调试电路
+
+核心板上已经搭载了Segger JLink-OB电路，使用的主控是瑞萨的RA4M2 MCU。
+
+此版本的JLink OB提供了SWD调试功能和一个USB CDC串口，可以同时实现调试和串口通信，用户使用时无需再外接一个串口芯片。核心板上使用RA8的串口3（P408/P409）和JLink-OB的串口进行通信。
+
+此版本的JLink OB还支持RA MCU的扩展功能。包括：
+- **RA MCU 的SCI-Boot模式**，通过控制RA8 MCU的RESET和MD信号使RA MCU进入SCI Boot，并通过RA MCU的P208和P209实现串口通信。（CPKCOR-RA8D1B核心板预留了和Jlink OB的这个接口，但没有使用）
+- **RA8D1/M1/T1的SWD-Boot模式**，通过控制RA8 MCU的RESET信号，在RESET低电平时向SWD接口的寄存器写入特定内容，RESET拉高后，RA8 MCU即进入SWD Boot模式，通过SWD接口和调试器通信（CPKCOR-RA8D1B缺省支持这个模式）。
+
+在您设计自己的电路时，可以参考核心板的调试电路连接，但请务必确保调试器的RESET信号连到了RA8 MCU上。
+![alt text](images/03_hardware/image-4.png)
+
+在RA MCU复位后，SWD/JTAG调试接口使用的P2端口上I/O缺省设置为调试口，以便调试器可以连接到MCU。详见手册`Table 19.8 Register settings for input/output pin function (PORT2)`。如果需要将这些端口在应用程序中作为GPIO来使用，需要进行对应的设置。如果作为GPIO使用了，那需要再次连接调试器时，要配合RESET复位才能实现连接。
+
+核心板上还预留了J902通孔接口，可以外接其他调试器，更多调试相关的内容会在后续的[RA8的调试和烧录接口](06_debug.md)章节中有详细的解释。
+
+### 高速 USB 2.0 双向接口
+
+RA8D1 MCU支持一路高速USB 2.0和一路全速USB，核心板上只使用了高速USB 2.0接口，未将全速USB接口引出。
+
+RA8D1的高速USB 2.0支持主机和设备模式，核心板上使用了USB 2.0 Type-C 接口，通过外接电路实现了USB Host和USB Device的自动识别和切换。
+
+Type-C接口本身使用CC1和CC2信号来识别和判断USB类型，供电状况，以及实现PD通信。RA8D1 MCU核心板并不需要复杂的供电协议，也不会需要大电流供电支持，所以在设计上尽量简化，使用简单的数字逻辑（不使用专门的CC协议芯片）来实现主从切换和供电。
+
+当USB Type-C设备连到JUSB接口时，CC1/CC2上会有一个下拉电阻到地，USBHS_ID变为低电平，U402导通为USB Type-C口提供5V供电，此时RA8的USB-HS模块工作在Host模式下。
+
+当JUSB作为设备接入USB主机时，USBHS_ID为高电平，U402不工作，USBHS_VBUS检测到3.3V，USB模块工作在Device模式下。
+
+
+![alt text](images/03_hardware/image-6.png)
+
+- 由于电路设计限制，如果USB主机端是标准的Type-C接口，此时核心板上没有CC1/CC2下拉到地，主机端无法得知有设备插入，从而不对端口供电，核心板无法取电。即使核心板有其他电源供电，主机没有识别到设备插入，也不会开启主机的USB-C端口，无法通信。
+ 
+  ![alt text](images/03_hardware/image-7.png)
+
+- JUSB接口如果要作为设备使用，请使用主机端的USB-A接口，USB-A口会持续为设备供电。也可以在USB-C接口上添加一个Type-C -> Type-A的转换接口（转换接口里包含CC1/CC2的下拉电阻，诱骗Type-C口供电）。
+ 
+  ![alt text](images/03_hardware/image-8.png)
+
+更多USB接口相关的内容会在后续的[RA8 USB 2.0 高速接口](07_usbhs.md)章节中有详细的解释。
+
+### 外接扩展口
+
+作为开发板，扩展功能是不可缺少的。CPKCOR-RA8D1B有两种类型的扩展接口，适合不同类型的需求。
+
+#### 通孔扩展接口
+
+使用2.54mm间距的通孔设计，方便用户使用单排针和杜邦线进行扩展，当然也可以使用排针进行板级扩展。
+
+通孔扩展分为两个部分，一个是J901和J902两个4针的扩展接口，主要实现调试口和串口的扩展。
+
+![alt text](images/03_hardware/image-9.png)
+
+JA和JD部分主要是功能扩展，其中部分功能和SDRAM的管脚复用。
+和SDRAM不冲突的主要是模拟功能管脚。
+在不使用SDRAM时，可以使用JA和JD的全部功能，包括各种串行口，以太网接口，SDHI接口，电机控制接口等。
+
+![alt text](images/03_hardware/image-10.png)
+
+通孔扩展接口的详细使用介绍，请查看后续的[CPKCOR-RA8D1B 通孔扩展接口](04_th_expansion.md)章节。
+
+
+#### 高密度板对板扩展接口
+
+板载的RA8D1/M1芯片管脚中，除了16位SDRAM接口和用户按键、用户LED，其他所有的信号都通过2个80脚的板对板接插件引出，可以连接到用户设计的扩展板上，实现快速功能验证和原型设计。扩展板设计改版时，核心板可以重复利用，大幅降低了系统验证的难度和试错成本。
+
+扩展接口上有多种电源信号，在核心板有外部电源时，可以通过接口给扩展板供电。如果核心板没有独立供电，那也可以通过扩展板反向给核心板供电。在后续的[RA8电源设计](09_powerdesign.md)章节中会详细介绍如何使用扩展电源接口。
+
+RA8 MCU的端口复用功能比较复杂，在文档中无法详尽描述各种用例，只能举例说明。
+
+以下管脚的位置分布为核心板的顶视图（RA8 MCU所在面为顶面，J1,J2在底面），也就是扩展板上的对应接插件安装面的顶视图。
+
+这是一个RA8D1扩展功能管脚配置的例子，扩展了
+- MIPI-DSI、RGB666显示接口，
+- CEU摄像头输入
+- 2个串口，2个I2C接口，1个SPI接口
+- 2个CAN-FD接口
+- USB 全速接口
+- PWM输出，AD输入，DA输出
+- SWD调试接口，SCI Boot控制
+- GPIO，外部中断输入
+
+![alt text](images/03_hardware/image-11.png)
+
+在后续的[CPKCOR-RA8D1B 板对板扩展接口](05_btb_expansion.md)章节中，会详细介绍接口的扩展能力和设计思路。

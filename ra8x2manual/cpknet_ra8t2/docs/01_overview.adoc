@@ -1,0 +1,59 @@
+:scripts: cjk
+//include::locale/attributes.adoc[]
+
+include::./00_directives.adoc[]
+
+== {coreboardname} 核心板使用手册和设计指南
+
+{coreboardname}核心板是瑞萨电子为中国市场设计的模块化开发板，
+使用瑞萨{coreboardmcu}双核MCU，板载JLink调试器和USB虚拟串口，只需连接USB线即可开始调试运行。
+核心板上已经设计搭载了{coreboardmcu} MCU较为有特色的外设接口和器件，可以直接使用核心板进行学习，评估和应用开发。
+配合扩展底板一起使用，更可实现快速产品原型开发和验证。
+
+本手册包含使用手册和设计指南，缺省显示使用手册，帮助您尽快地开始使用开发板上的各种功能。
+如果您希望深入了解开发板上各个功能和电路设计原理，可以点开对应部分使用手册下的箭头，查看设计指南。
+
+原理图下载：link:{core_bd_name}_{core_bd_version}_sch.pdf[{coreboardname} {core_bd_version}版原理图]
+
+* [x] <<{coreboardname} 简介,01. {coreboardname}简介>>
+* [x] link:02_unbox.adoc[02. {coreboardname}开箱]
+* [ ] link:03_hardware.adoc[03. {coreboardname}的硬件概述]
+* [ ] link:04_th_expansion.adoc[04. {coreboardname}的通孔扩展接口]
+* [ ] link:05_btb_expansion.adoc[05. {coreboardname}的板载存储器件]
+* [ ] link:06_debug.adoc[06. {coreboardname}的调试和烧录功能]
+* [ ] link:07_usb.adoc[07. {coreboardname}的{core_bd_usb}接口]
+* [ ] link:08_storage.adoc[08. {coreboardname}的板载存储器件]
+* [ ] link:09_powerdesign.adoc[09. {coreboardname}电源设计]
+ifeval::["{core_bd_mcu}" == "ra8p1"]
+* [ ] link:10_mipi.adoc[10. {coreboardname}的MIPI接口]
+endif::[]
+
+
+== {coreboardname} 简介
+
+{coreboardname}核心板上使用289BGA封装的{coreboardmcu}双核MCU（U1），除了实现{coreboardmcu}的最小系统外，还搭载了实用的外设功能，包括：
+
+. 32位SDRAM（U2），16M字节容量
+. QSPI Flash（U3），32M字节容量
+. USB 2.0全速Type-C 2.0接口，支持双功能端口（DRP：Dual Role Port），支持Dead Battery功能
+. 板载Segger Jlink调试器，同时支持一路虚拟串口，使用JDBG USB Type-C 2.0 接口，仅支持UFP（作为USB设备）
+. 电源LED（白色），用户LED-P110（绿色），复位按键和用户按键-P303，P201
+. 2.54mm间距的通孔扩展接口，管脚定义兼容PMOD接口
+  .. J201 串行口扩展
+  .. J202 串行口扩展
+  .. J301 5V电源（跳线/输入输出）
+
+image::{core_bd_name}/docs/images/01_overview/{core_bd_name}_top.png[]
+
+在核心板的的底面，预留了功能丰富的扩展接口，包括：
+
+[start=7]
+. TF卡槽，支持3.3V的TF卡信号电平（DS和HS速度模式）
+. J1，J2，J3 三个80管脚的高密度板对板连接器
+  * HRS link:https://item.szlcsc.com/279578.html[DF40C-80DP-0.4V(51)]
+  * 扩展板上使用的对应接插件有多种合高选择，1.5/2.0/3.0/3.5/4.0mm
+
+image::{core_bd_name}/docs/images/01_overview/{core_bd_name}_bottom.png[]
+
+下一篇：link:02_unbox.adoc[02. {coreboardname}开箱]
+

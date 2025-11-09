@@ -1,0 +1,25 @@
+:scripts: cjk
+
+:imagesdir: ../..
+
+:coreboardmcu: RA8T2
+:core_bd_mcu: ra8t2
+:coreboardname: CPKNET-RA8T2
+:core_bd_name: cpknet_ra8t2
+:core_bd_version: v1.1
+:expboardname: CPKEXP-ECSMCB
+:exp_bd_name: cpkexp_ecsmcb
+:exp_bd_version: v1.0
+
+ifeval::["{core_bd_mcu}" == "ra8p1"]
+:core_bd_usb: USB-2.0高速
+endif::[]
+
+ifeval::["{core_bd_mcu}" == "ra8t2"]
+:core_bd_usb: USB-2.0全速
+endif::[]
+
+:dsurl1: https://www.renesas.com/document/dst/
+:dsurl2: -group-datasheet
+:uhyrl1: https://www.renesas.com/document/mah/
+:uhyrl2: -group-users-manual-hardware

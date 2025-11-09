@@ -1,0 +1,9 @@
+:scripts: cjk
+
+:imagesdir: ../..
+
+tag::storage_cpkcor_intro[]
+
+
+
+end::storage_cpkcor_intro[]

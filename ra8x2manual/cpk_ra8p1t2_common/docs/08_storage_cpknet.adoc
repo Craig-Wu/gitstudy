@@ -1,0 +1,22 @@
+:scripts: cjk
+
+:imagesdir: ../..
+
+tag::storage_cpknet_intro[]
+
+核心板上扩展了3个存储器
+
+* 32位总线宽度的SDRAM，连接外部总线控制器的SDRAM接口
+    ** SDRAM区域的寻址范围0x6800_0000 ~ 0x6FFF_FFFF，最大128M字节
+    ** 核心板上使用的是华邦的W9812G2KB，容量为16M字节，地址范围0x6800_0000 ~ 0x68FF_FFFF
+* QSPI Flash，使用MCU的Octal SPI接口（OSPI_B）的Unit0，接在CS0片选上
+  ** OSPI_B共有2个独立的单元，每个单元支持2个CS片选空间
+  ** OSPI_B支持xSPI协议，符合JEDEC标准JESD251(Profile 1.0 and 2.0)、JESD251-1和JESD252.
+  ** 四线接口模式收录在JESD251-1的附录1，即JESD251-1.01 `Addendum No. 1 to JESD251, Optional x4 Quad I/O With Data Strobe'
+  ** 核心板上使用华邦的W25Q256JV，容量为32M字节，内存映射访问时，地址范围是0x8000_0000 ~ 0x81FF_FFFF
+* TF卡槽，支持3.3V I/O的TF卡，即下图中的标准速率卡和高速卡
+    ** 支持TF卡插入检测功能
+
+image::cpk_ra8p1t2_common/docs/images/08_storage_cpknet/image-5.png[]
+
+end::storage_cpknet_intro[]

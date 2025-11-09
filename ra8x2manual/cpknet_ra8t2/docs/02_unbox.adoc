@@ -1,0 +1,35 @@
+:scripts: cjk
+//include::locale/attributes.adoc[]
+
+include::./00_directives.adoc[]
+
+== 开始使用{coreboardname}核心板
+
+核心板使用USB 2.0 Type-C接口供电和调试，购买时不附带线缆，需要自备USB Type-C线。
+
+image::{core_bd_name}/docs/images/02_unbox/{core_bd_name}.png[role="thumb"]
+
+include::../../cpk_ra8p1t2_common/docs/02_unbox_fsp_board_setup.adoc[tag=unbox_fsp_boardsetup_1]
+
+//board image of successful connection
+
+image::{core_bd_name}/docs/images/02_unbox/{core_bd_name}_jlinkconnect.png[连接成功, role="thumb"]
+
+include::../../cpk_ra8p1t2_common/docs/02_unbox_fsp_board_setup.adoc[tag=unbox_fsp_boardsetup_2]
+
+//board bsp download link
+link:./Renesas.RA_board_ra8t2_cpknet.6.2.0.pack[点此下载{coreboardname} 的BSP文件]，请在FSP 6.2.0或更高版本中使用此BSP。
+
+include::../../cpk_ra8p1t2_common/docs/02_unbox_fsp_board_setup.adoc[tag=unbox_fsp_boardsetup_3]
+
+//blinly project BSP selection image
+
+image::{core_bd_name}/docs/images/02_unbox/{core_bd_name}_blinkybsp.png[role="thumb"]
+
+include::../../cpk_ra8p1t2_common/docs/02_unbox_fsp_board_setup.adoc[tag=unbox_fsp_boardsetup_4]
+
+瑞萨为{coreboardname}核心板提供多种link:../../{core_bd_name}/[样例代码]，您也可以直接选择所需的样例代码开始进行评估核开发。
+
+
+
+上一篇：link:01_overview.adoc[01. {coreboardname} 简介]                下一篇：link:03_hardware.adoc[03. {coreboardname}的硬件概述]

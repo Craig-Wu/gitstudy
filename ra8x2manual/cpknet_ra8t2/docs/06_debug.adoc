@@ -1,0 +1,5 @@
+:scripts: cjk
+//include::locale/attributes.adoc[]
+
+:imagesdir: images/02_unbox
+
