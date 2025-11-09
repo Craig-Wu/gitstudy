@@ -2,4 +2,4 @@
 
 link:../ra8qsg.pdf#page=2[TEST PDF Link]
 
-link:https://www.renesas.cn/zh/document/dst/ra8t2-group-datasheet#page=4[^]
+link:https://www.renesas.cn/zh/document/dst/ra8t2-group-datasheet#page=4[RA8T2 Datasheet page4^]
